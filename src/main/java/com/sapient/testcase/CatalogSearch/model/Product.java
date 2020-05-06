@@ -16,88 +16,31 @@ package com.sapient.testcase.CatalogSearch.model;
 6.	Available number of product by seller
  */
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.List;
 
 
 @ToString
-public class Product {
+@Getter
+@Setter
+@Builder
+@Entity
+@AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Product implements Serializable {
+    public Product(){}
+    @Id
     String productId;
     String name;
-    Enum<Colour> colour;
-    Enum<Size> size;
+    Colour colour;
+    Size size;
     String brand;
     Price price;
     int available;
-    List<Seller> sellerList;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public Enum<Colour> getColour() {
-        return colour;
-    }
-
-    public void setColour(Enum<Colour> colour) {
-        this.colour = colour;
-    }
-
-    public Enum<Size> getSize() {
-        return size;
-    }
-
-    public void setSize(Enum<Size> size) {
-        this.size = size;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public Price getPrice() {
-        return price;
-    }
-
-    public void setPrice(Price price) {
-        this.price = price;
-    }
-
-    public int getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(int available) {
-        this.available = available;
-    }
-
-    public List<Seller> getSellerList() {
-        return sellerList;
-    }
-
-    public void setSellerList(List<Seller> sellerList) {
-        this.sellerList = sellerList;
-    }
-
-
 }

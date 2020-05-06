@@ -1,25 +1,21 @@
 package com.sapient.testcase.CatalogSearch.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.io.Serializable;
 
 @Setter
+@Getter
 @ToString
-public class Price {
+@AllArgsConstructor
+@Builder
+public class Price implements Serializable {
+    public Price(){}
+    @Id
     String productId;
     String currency;
     double value;
 
-    public Price(String productId, String currency, double value) {
-        this.productId = productId;
-        this.currency = currency;
-        this.value = value;
-    }
-
-
-    public double getValue() {
-        return this.value;
-    }
 }

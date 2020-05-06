@@ -1,6 +1,10 @@
 package com.sapient.testcase.CatalogSearch.dao;
 
 import com.sapient.testcase.CatalogSearch.model.*;
+import com.sapient.testcase.CatalogSearch.repository.ProductRepository;
+import com.sapient.testcase.CatalogSearch.repository.SellerRepository;
+import com.sapient.testcase.CatalogSearch.repository.StockRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -8,15 +12,34 @@ import java.util.*;
 @Component
 public class CatalogDaoImpl implements CatalogDao{
 
+    @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    SellerRepository sellerRepository;
+    @Autowired
+    StockRepository stockRepository;
+
+
     private List<Product> products = new ArrayList<>();
+
+
+
 
     @Override
     public List<Product> getAllProduct() {
-        if(products.size()>0){
-            return products;
-        }
-        inializeProducts();
-        return products;
+        final List<Product> productList = productRepository.findAll();
+        productList.forEach(
+                product -> {
+                    final int[] available = {0};
+                    stockRepository.findAll().forEach(stock1 -> {
+                        if(stock1.getProductId().equals(product.getProductId())){
+                            available[0] = available[0] + (stock1.getTotalQty() - stock1.getSoldQty());
+                        }
+                    });
+                    product.setAvailable(available[0]);
+                }
+        );
+        return productList;
     }
 
 
@@ -50,52 +73,24 @@ public class CatalogDaoImpl implements CatalogDao{
         return allProduct;
     }
 
-    private void inializeProducts() {
-        Seller s1 = new Seller("s1", "Seller 1");
-        Seller s2 = new Seller("s2", "Seller 2");
-        Seller s3 = new Seller("s3", "Seller 3");
-
-        String id1 = UUID.randomUUID().toString();
-        Product p1 = new Product();
-        p1.setProductId(id1);
-        p1.setName("FORMAL SHIRT");
-        p1.setAvailable(10);
-        p1.setBrand("XYZ");
-        p1.setColour(Colour.GREEN);
-        p1.setSize(Size.MEDIUM);
-        Price p = new Price(id1, "INR", 2000d);
-        List<Seller> sellers = Arrays.asList(s1,s2,s3);
-        p1.setPrice(p);
-        p1.setSellerList(sellers);
-        products.add(p1);
-
-        String id2 = UUID.randomUUID().toString();
-        Product p2 = new Product();
-        p2.setName("TROUSER PANT");
-        p2.setProductId(id2);
-        p2.setAvailable(100);
-        p2.setBrand("XYZ");
-        p2.setColour(Colour.YELLOW);
-        p2.setSize(Size.MEDIUM);
-        Price price2 = new Price(id2, "INR", 3000d);
-        List<Seller> sellers2 = Arrays.asList(s1,s2);
-        p2.setPrice(price2);
-        p2.setSellerList(sellers2);
-        products.add(p2);
-
-        String id3 = UUID.randomUUID().toString();
-        Product p3 = new Product();
-        p3.setName("TROUSER PANT");
-        p3.setProductId(id2);
-        p3.setAvailable(100);
-        p3.setBrand("XYZ");
-        p3.setColour(Colour.RED);
-        p3.setSize(Size.LARGE);
-        Price price3 = new Price(id3, "INR", 5000d);
-        List<Seller> sellers3 = Arrays.asList(s1);
-        p3.setPrice(price3);
-        p3.setSellerList(sellers3);
-        products.add(p3);
-
+    @Override
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
     }
+
+    @Override
+    public Seller createSeller(Seller seller) {
+        return sellerRepository.save(seller);
+    }
+
+    @Override
+    public Stock createStock(Stock stock) {
+        return stockRepository.save(stock);
+    }
+
+    @Override
+    public Product getProductById(String productId) {
+        return productRepository.getOne(productId);
+    }
+
 }
