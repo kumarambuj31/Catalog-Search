@@ -5,6 +5,7 @@ import com.sapient.testcase.CatalogSearch.repository.ProductRepository;
 import com.sapient.testcase.CatalogSearch.repository.SellerRepository;
 import com.sapient.testcase.CatalogSearch.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -91,6 +92,11 @@ public class CatalogDaoImpl implements CatalogDao{
     @Override
     public Product getProductById(String productId) {
         return productRepository.getOne(productId);
+    }
+
+    @Override
+    public List<Product> findAll(Example<Product> example) {
+        return productRepository.findAll(example);
     }
 
 }

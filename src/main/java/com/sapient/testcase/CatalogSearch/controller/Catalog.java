@@ -1,8 +1,6 @@
 package com.sapient.testcase.CatalogSearch.controller;
 
-import com.sapient.testcase.CatalogSearch.model.Product;
-import com.sapient.testcase.CatalogSearch.model.Seller;
-import com.sapient.testcase.CatalogSearch.model.Stock;
+import com.sapient.testcase.CatalogSearch.model.*;
 import com.sapient.testcase.CatalogSearch.service.CatalogService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +68,25 @@ public class Catalog {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Product>> getAllProduct(){
         return new ResponseEntity<>(catalogService.getAllProduct(), HttpStatus.OK);
+    }
+
+    @GetMapping("/products/search")
+    public List<Product> retrieveAllProduct(
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) Double price,
+            @RequestParam(required = false) String colour,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String sku,
+            @RequestParam(required = false) int quantity) {
+
+        Product searchSimilarProduct = Product.builder().brand(brand)
+                .colour(Colour.valueOf(colour)).productId(sku).build();
+
+        searchSimilarProduct.setPrice(Price.builder().currency("INR").value(price).build());
+        searchSimilarProduct.setSize(Enum.valueOf(Size.class, size));
+        searchSimilarProduct.setAvailable(quantity);
+
+        return catalogService.searchAll(searchSimilarProduct);
     }
 
 

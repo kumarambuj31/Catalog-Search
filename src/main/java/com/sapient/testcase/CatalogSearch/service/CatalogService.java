@@ -5,6 +5,7 @@ import com.sapient.testcase.CatalogSearch.model.Product;
 import com.sapient.testcase.CatalogSearch.model.Seller;
 import com.sapient.testcase.CatalogSearch.model.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,5 +45,10 @@ public class CatalogService {
 
     public Product getProductById(String productId) {
         return catalogDao.getProductById(productId);
+    }
+
+    public List<Product> searchAll(Product searchSimilarProduct) {
+        Example<Product> example = Example.of(searchSimilarProduct);
+        return catalogDao.findAll(example);
     }
 }
